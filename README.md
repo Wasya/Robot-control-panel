@@ -20,10 +20,12 @@ This is a cross-platform desktop application built using PyQt5 to provide a Grap
     * Supports various types: **String, Integer, Boolean, Choice (ComboBox), Password**.
     * Variables are automatically passed to Robot Framework as `-v NAME:VALUE`.
     * Configuration is persisted in `robot_variables.json`.
+    * <img width="602" height="473" alt="RobotCC1" src="https://github.com/user-attachments/assets/03cb03db-dcdf-4d54-b721-316227de0928" />
 
 2.  **Log Level Control**:
     * Added a setting for explicit log level (**TRACE, DEBUG, INFO, WARN**) in the "Run Settings" tab.
     * The default option **" "** (empty) is used to **not** pass the `--loglevel` argument to Robot Framework, preserving the default CLI behavior and log fidelity.
+    * <img width="602" height="473" alt="RobotCC2" src="https://github.com/user-attachments/assets/c53bf076-5edd-4059-b5b6-ddf3f107a081" />
 
 3.  **Advanced Run Settings**:
     * Configuration for **Output Directory**.
@@ -47,6 +49,7 @@ This is a cross-platform desktop application built using PyQt5 to provide a Grap
     ```bash
     python robot_control_panel.py
     ```
+    or use PyInstaller to pack into an .exe file (for Windows) or .app (for macOS)
 
 ### Usage Workflow
 
