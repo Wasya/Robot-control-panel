@@ -70,11 +70,11 @@ def parse_robot_file(file_path):
 def get_environment_info():
     """Gathers information about the Python and Robot Framework environment."""
     info = {
-        "python_version": sys.version.split()[0],
-        "executable": sys.executable,
-        "robot_version": "Unknown",
-        "libraries": []
-    }
+            "python_version": sys.version.split()[0],
+            "executable": sys.executable,
+            "robot_version": "Unknown",
+            "libraries": []
+            }
     try:
         import robot
         info["robot_version"] = robot.__version__
@@ -88,8 +88,10 @@ def get_environment_info():
         for line in lines:
             if any(x in line.lower() for x in ["robotframework", "selenium", "requests"]):
                 parts = line.split()
-                if len(parts) >= 2: info["libraries"].append((parts[0], parts[1]))
-    except Exception:
+                if len(parts) >= 2:
+                    info["libraries"].append((parts[0], parts[1]))
+    except Exception as e:
+        print(f"Error loading vars: {e}")
         pass
     return info
 
@@ -108,7 +110,6 @@ def run_tests_api(file_path, test_cases, tags, runs, options, callback):
         "stdout": None,
         "stderr": None,
         "dryrun": options.get("dryrun", False),
-        # loglevel is only set if provided (not the empty string ' ')
         "loglevel": options.get("loglevel"),
         "exitonfailure": options.get("exitonfailure", False),
     }
@@ -138,7 +139,8 @@ def run_tests_api(file_path, test_cases, tags, runs, options, callback):
                     includes.append(val)
                     i += 2
                 elif key in ['-e', '--exclude'] and val:
-                    if "exclude" not in robot_options: robot_options["exclude"] = []
+                    if "exclude" not in robot_options:
+                        robot_options["exclude"] = []
                     robot_options["exclude"].append(val)
                     i += 2
                 elif key in ['-L', '--loglevel'] and val:
