@@ -1,0 +1,21 @@
+[
+  {
+    "name": "HEADLESS",
+    "type": "boolean",
+    "default": "True",
+    "description": "Run browser in headless mode",
+    "value": "True"
+  },
+  {
+    "name": "BROWSER",
+    "type": "choice",
+    "description": "Browser for work",
+    "default": "chrome",
+    "value": "chrome",
+    "options": [
+      "chrome",
+      "firefox",
+      "edge"
+    ]
+  }
+]
