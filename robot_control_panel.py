@@ -1,3 +1,9 @@
+#       ____        __          __     ______            __             __   ____                   __
+#      / __ \____  / /_  ____  / /_   / ____/___  ____  / /__________  / /  / __ \____ _____  ___  / /
+#     / /_/ / __ \/ __ \/ __ \/ __/  / /   / __ \/ __ \/ __/ ___/ __ \/ /  / /_/ / __ `/ __ \/ _ \/ / 
+#    / _, _/ /_/ / /_/ / /_/ / /_   / /___/ /_/ / / / / /_/ /  / /_/ / /  / ____/ /_/ / / / /  __/ /  
+#   /_/ |_|\____/_.___/\____/\__/   \____/\____/_/ /_/\__/_/   \____/_/  /_/    \__,_/_/ /_/\___/_/   
+
 #!/usr/bin/env python3
 import sys
 import os
@@ -8,7 +14,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QMessageBox, QTextBrowser, QComboBox, QTabWidget,
                              QSplitter, QTreeWidget, QTreeWidgetItem, QTableWidget,
                              QTableWidgetItem, QHeaderView, QLineEdit, QDialog,
-                             QFormLayout, QFrame)
+                             QFormLayout)
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QUrl
 from PyQt5.QtGui import QColor, QFont, QDesktopServices, QIcon
 
@@ -179,34 +185,34 @@ class RobotControlPanel(QMainWindow):
         selection_tabs = QTabWidget()
 
         # Test Case Selection Panel
-        tc_widget = QWidget();
+        tc_widget = QWidget()
         tc_layout = QVBoxLayout(tc_widget)
         self.tests_layout = QVBoxLayout()
-        tc_scroll = QScrollArea();
+        tc_scroll = QScrollArea()
         tc_group = QGroupBox("Test Cases")
-        tc_group.setLayout(self.tests_layout);
-        tc_scroll.setWidget(tc_group);
+        tc_group.setLayout(self.tests_layout)
+        tc_scroll.setWidget(tc_group)
         tc_scroll.setWidgetResizable(True)
         tc_layout.addWidget(tc_scroll)
 
         # Test Case Selection Buttons
         tc_btns = QHBoxLayout()
-        btn_all = QPushButton("All");
+        btn_all = QPushButton("All")
         btn_all.clicked.connect(self.select_all_tests)
-        btn_none = QPushButton("None");
+        btn_none = QPushButton("None")
         btn_none.clicked.connect(self.deselect_all_tests)
-        tc_btns.addWidget(btn_all);
+        tc_btns.addWidget(btn_all)
         tc_btns.addWidget(btn_none)
         tc_layout.addLayout(tc_btns)
 
         # Tag Selection Panel
-        tag_widget = QWidget();
+        tag_widget = QWidget()
         tag_layout = QVBoxLayout(tag_widget)
         self.tags_layout = QVBoxLayout()
-        tag_scroll = QScrollArea();
+        tag_scroll = QScrollArea()
         tag_group = QGroupBox("Tags")
-        tag_group.setLayout(self.tags_layout);
-        tag_scroll.setWidget(tag_group);
+        tag_group.setLayout(self.tags_layout)
+        tag_scroll.setWidget(tag_group)
         tag_scroll.setWidgetResizable(True)
         tag_layout.addWidget(tag_scroll)
 
@@ -215,7 +221,7 @@ class RobotControlPanel(QMainWindow):
         splitter.addWidget(selection_tabs)
 
         # Results Viewer Panel
-        results_widget = QWidget();
+        results_widget = QWidget()
         results_layout = QVBoxLayout(results_widget)
         self.results_tree = QTreeWidget()
         self.results_tree.setHeaderLabels(["Test Case", "Status", "Duration/Msg"])
@@ -231,7 +237,7 @@ class RobotControlPanel(QMainWindow):
         self.tabs.addTab(runner_tab, "Runner")
 
     def setup_settings_tab(self):
-        # Setup the run configuration and external variables tab
+        # Set up the run configuration and external variables tab
         settings_tab = QWidget()
 
         scroll = QScrollArea()
@@ -328,13 +334,13 @@ class RobotControlPanel(QMainWindow):
         self.tabs.addTab(settings_tab, "Run Settings")
 
     def setup_env_tab(self):
-        # Setup the environment information tab
-        env_tab = QWidget();
+        # Set up the environment information tab
+        env_tab = QWidget()
         layout = QVBoxLayout(env_tab)
-        btn_refresh = QPushButton("Refresh Environment Info");
+        btn_refresh = QPushButton("Refresh Environment Info")
         btn_refresh.clicked.connect(self.refresh_env_info)
         layout.addWidget(btn_refresh)
-        self.env_table = QTableWidget();
+        self.env_table = QTableWidget()
         self.env_table.setColumnCount(2)
         self.env_table.setHorizontalHeaderLabels(["Component", "Version/Path"])
         self.env_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -443,8 +449,9 @@ class RobotControlPanel(QMainWindow):
             widget.setRange(-999999, 999999)
             try:
                 widget.setValue(int(default_val))
-            except:
+            except Exception as e:
                 widget.setValue(0)
+                print(f"Error loading vars: {e}")
             return widget
 
         elif vtype == "choice":
@@ -516,24 +523,28 @@ class RobotControlPanel(QMainWindow):
 
     def load_test_cases(self, fp):
         # Parse file and populate the test case and tag checkboxes
-        for cb in self.test_checkboxes + self.tag_checkboxes: cb.deleteLater()
+        for cb in self.test_checkboxes + self.tag_checkboxes:
+            cb.deleteLater()
         self.test_checkboxes, self.tag_checkboxes = [], []
         self.test_cases, self.all_tags = parse_robot_file(fp)
         for tc in self.test_cases:
             cb = QCheckBox(tc["name"])
-            if tc["documentation"]: cb.setToolTip(tc["documentation"])
-            self.tests_layout.addWidget(cb);
+            if tc["documentation"]:
+                cb.setToolTip(tc["documentation"])
+            self.tests_layout.addWidget(cb)
             self.test_checkboxes.append(cb)
         for tag in self.all_tags:
             cb = QCheckBox(tag)
-            self.tags_layout.addWidget(cb);
+            self.tags_layout.addWidget(cb)
             self.tag_checkboxes.append(cb)
 
     def select_all_tests(self):
-        for cb in self.test_checkboxes: cb.setChecked(True)
+        for cb in self.test_checkboxes:
+            cb.setChecked(True)
 
     def deselect_all_tests(self):
-        for cb in self.test_checkboxes: cb.setChecked(False)
+        for cb in self.test_checkboxes:
+            cb.setChecked(False)
 
     def load_config(self):
         # Load history of additional parameters
@@ -542,10 +553,11 @@ class RobotControlPanel(QMainWindow):
                 with open(self.config_file, "r") as f:
                     cfg = json.load(f)
                     self.param_history = cfg.get("param_history", [])
-                    self.params_combo.clear();
-                    self.params_combo.addItems(self.param_history);
+                    self.params_combo.clear()
+                    self.params_combo.addItems(self.param_history)
                     self.params_combo.setCurrentText("")
-        except:
+        except Exception as e:
+            print(f"Error load config: {e}")
             pass
 
     def save_config(self):
@@ -553,7 +565,8 @@ class RobotControlPanel(QMainWindow):
         try:
             with open(self.config_file, "w") as f:
                 json.dump({"param_history": self.param_history}, f)
-        except:
+        except Exception as e:
+            print(f"Error saving config: {e}")
             pass
 
     def on_params_changed(self, t):
@@ -564,24 +577,26 @@ class RobotControlPanel(QMainWindow):
         # Delete parameter from history
         ct = self.params_combo.currentText()
         if ct in self.param_history:
-            self.param_history.remove(ct);
-            self.params_combo.removeItem(self.params_combo.currentIndex());
+            self.param_history.remove(ct)
+            self.params_combo.removeItem(self.params_combo.currentIndex())
             self.save_config()
 
     def run_tests(self):
         # Main test execution handler
-        if not self.current_file: return QMessageBox.warning(self, "Error", "Select file first.")
+        if not self.current_file:
+            return QMessageBox.warning(self, "Error", "Select file first.")
 
         # Collect selected tests and tags
         sel_tests = [self.test_cases[i]["name"] for i, cb in enumerate(self.test_checkboxes) if cb.isChecked()]
         sel_tags = [self.all_tags[i] for i, cb in enumerate(self.tag_checkboxes) if cb.isChecked()]
-        if not sel_tests and not sel_tags: return QMessageBox.warning(self, "Error", "Select test or tag.")
+        if not sel_tests and not sel_tags:
+            return QMessageBox.warning(self, "Error", "Select test or tag.")
 
         # Handle additional CLI arguments history
         add_args = self.params_combo.currentText().strip()
         if add_args and add_args not in self.param_history:
-            self.param_history.insert(0, add_args);
-            self.params_combo.insertItem(0, add_args);
+            self.param_history.insert(0, add_args)
+            self.params_combo.insertItem(0, add_args)
             self.save_config()
 
         # Update and save current variable values
@@ -592,12 +607,12 @@ class RobotControlPanel(QMainWindow):
         variables_list = [f"{var['name']}:{var['value']}" for var in self.external_variables]
 
         # UI cleanup before run
-        self.run_button.setEnabled(False);
+        self.run_button.setEnabled(False)
         self.run_button.setText("Running...")
-        self.results_text.clear();
-        self.results_tree.clear();
+        self.results_text.clear()
+        self.results_tree.clear()
         self.current_tree_items = {}
-        self.log_btn.setVisible(False);
+        self.log_btn.setVisible(False)
         self.report_btn.setVisible(False)
 
         # --- MILESTONE 0.2.2: Handle empty string for default loglevel ---
@@ -626,33 +641,36 @@ class RobotControlPanel(QMainWindow):
         # Handle real-time logs from the runner thread
         if mt == "log":
             c = "black"
-            if "[WARN]" in msg: c = "orange"
-            if "[FAIL]" in msg: c = "red"
+            if "[WARN]" in msg:
+                c = "orange"
+            if "[FAIL]" in msg:
+                c = "red"
             self.results_text.append(f'<span style="color:{c}">{msg}</span>')
         elif mt == "start_test":
             tn = msg.replace("START: ", "")
-            item = QTreeWidgetItem(self.results_tree);
-            item.setText(0, tn);
-            item.setText(1, "Running...");
+            item = QTreeWidgetItem(self.results_tree)
+            item.setText(0, tn)
+            item.setText(1, "Running...")
             item.setBackground(1, QColor("yellow"))
-            self.current_tree_items[tn] = item;
+            self.current_tree_items[tn] = item
             self.results_tree.scrollToItem(item)
         elif mt == "end_test":
             tn = msg.split(" [")[0].replace("END: ", "")
             st = pl['status']
             if tn in self.current_tree_items:
-                it = self.current_tree_items[tn];
+                it = self.current_tree_items[tn]
                 it.setText(1, st)
                 it.setBackground(1, QColor("#ccffcc") if st == "PASS" else QColor("#ffcccc"))
-                if st != "PASS": it.setExpanded(True)
+                if st != "PASS":
+                    it.setExpanded(True)
 
     def tests_finished(self, od):
         # Handler after thread completes
-        self.run_button.setEnabled(True);
+        self.run_button.setEnabled(True)
         self.run_button.setText("Run Selected Tests")
-        self.last_output_dir = od;
+        self.last_output_dir = od
         self.results_text.append("\n=== Done ===")
-        self.log_btn.setVisible(True);
+        self.log_btn.setVisible(True)
         self.report_btn.setVisible(True)
 
     def open_report(self, fn):
